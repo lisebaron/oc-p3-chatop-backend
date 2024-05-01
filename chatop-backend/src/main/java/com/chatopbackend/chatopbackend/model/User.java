@@ -23,6 +23,7 @@ public class User {
         this.name = name;
         this.password = password;
         this.createdAt = new Timestamp(System.currentTimeMillis());
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
     public Integer getId() {

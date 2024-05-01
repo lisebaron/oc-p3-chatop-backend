@@ -34,6 +34,29 @@ public class RentalController {
         }
     }
 
+    @PutMapping("/api/rentals/{id}")
+    public ResponseEntity<Rental> editRentalById(@PathVariable Integer id, @RequestBody Rental request) {
+        Optional<Rental> optRental = rentalService.getRentalById(id);
+        if (optRental.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Rental rental = optRental.get();
+        if (!request.getName().isEmpty()) {
+            rental.setName(request.getName());
+        }
+        if (request.getSurface() != rental.getSurface()) {
+            rental.setSurface(request.getSurface());
+        }
+        if (request.getPrice() != rental.getPrice()) {
+            rental.setPrice(request.getPrice());
+        }
+        if (!request.getDescription().isEmpty()) {
+            rental.setDescription(request.getDescription());
+        }
+        // update rental
+        return ResponseEntity.ok().body(rental);
+    }
+
     @PostMapping("/api/rentals")
     public ResponseEntity<Rental> createRental(@RequestBody Rental request) {
         Rental createdRental = rentalService.createRental(request.getName(), request.getSurface(), request.getPrice(), request.getPicture(), request.getDescription());
