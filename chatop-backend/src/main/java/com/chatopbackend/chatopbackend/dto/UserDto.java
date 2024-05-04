@@ -1,41 +1,34 @@
-package com.chatopbackend.chatopbackend.model;
+package com.chatopbackend.chatopbackend.dto;
 
-import jakarta.persistence.*;
-
-import java.sql.Timestamp;
-
-@Entity
-@Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserDto {
     private Integer id;
-    @Column(unique = true)
     private String email;
     private String name;
     private String password;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 
-    public User() {
+    public UserDto() {
     }
 
-    public User(String email, String name, String password) {
+    public UserDto(String email, String name, String password) {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
-        this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
     public Integer getId() {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -43,6 +36,7 @@ public class User {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -50,18 +44,24 @@ public class User {
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Timestamp getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public Timestamp getUpdatedAt() {
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
         return updatedAt;
     }
-    public void setUpdatedAt(Timestamp updatedAt) {
+
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

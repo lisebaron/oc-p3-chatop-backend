@@ -4,6 +4,8 @@ import com.chatopbackend.chatopbackend.model.User;
 import com.chatopbackend.chatopbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 
 public class UserService {
@@ -11,6 +13,15 @@ public class UserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public User getUserById(Integer id) {
+        return userRepository.findById(id)
+                .orElse(null);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public User createUser(String email, String name, String password) {

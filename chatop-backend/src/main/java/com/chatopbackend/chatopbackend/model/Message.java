@@ -20,6 +20,9 @@ public class Message {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
+    public Message() {
+    }
+
     public Message(Rental rental, User user, String message) {
         this.rental = rental;
         this.user = user;
