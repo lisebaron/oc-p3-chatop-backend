@@ -1,5 +1,11 @@
 package com.chatopbackend.chatopbackend.dto;
 
+import com.chatopbackend.chatopbackend.model.User;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class UserDto {
     private Integer id;
     private String email;
@@ -11,10 +17,25 @@ public class UserDto {
     public UserDto() {
     }
 
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.name = user.getName();
+        this.password = user.getPassword();
+        this.createdAt = convertDateToString(user.getCreatedAt());
+        this.updatedAt = convertDateToString(user.getUpdatedAt());
+    }
+
     public UserDto(String email, String name, String password) {
         this.email = email;
         this.name = name;
         this.password = password;
+    }
+
+    private String convertDateToString (Date date) {
+        String pattern = "yyyy/dd/MM";
+        DateFormat df = new SimpleDateFormat(pattern);
+        return df.format(date);
     }
 
     public Integer getId() {

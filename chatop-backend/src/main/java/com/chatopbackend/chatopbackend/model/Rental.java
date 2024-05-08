@@ -1,5 +1,7 @@
 package com.chatopbackend.chatopbackend.model;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -18,7 +20,9 @@ public class Rental {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
+    @CreationTimestamp
     private Timestamp createdAt;
+    @UpdateTimestamp
     private Timestamp updatedAt;
 
     public Rental() {
@@ -31,7 +35,6 @@ public class Rental {
         this.picture = picture;
         this.description = description;
         this.owner = owner;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
     public Integer getId() {
@@ -73,7 +76,7 @@ public class Rental {
         this.description = description;
     }
 
-    public User getOwnerId() {
+    public User getOwner() {
         return owner;
     }
 
