@@ -1,9 +1,15 @@
 package com.chatopbackend.chatopbackend.dto;
 
+import com.chatopbackend.chatopbackend.model.Message;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MessageDto {
     private Integer id;
-    private Integer rental_id;
     private Integer user_id;
+    private Integer rental_id;
     private String message;
     private String createdAt;
     private String updatedAt;
@@ -14,6 +20,24 @@ public class MessageDto {
         this.message = message;
     }
 
+    public MessageDto(Message message) {
+        this.id = message.getId();
+        this.rental_id = message.getRental().getId();
+        this.user_id = message.getUser().getId();
+        this.message = message.getMessage();
+        this.createdAt = convertDateToString(message.getCreatedAt());
+        this.updatedAt = convertDateToString(message.getUpdatedAt());
+    }
+
+    public MessageDto() {
+    }
+
+    private String convertDateToString (Date date) {
+        String pattern = "yyyy/dd/MM";
+        DateFormat df = new SimpleDateFormat(pattern);
+        return df.format(date);
+    }
+
     public Integer getId() {
         return id;
     }
@@ -21,19 +45,19 @@ public class MessageDto {
         this.id = id;
     }
 
-    public Integer getRentalId() {
+    public Integer getRental_id() {
         return rental_id;
     }
 
-    public void setRentalId(Integer rental_id) {
+    public void setRental_id(Integer rental_id) {
         this.rental_id = rental_id;
     }
 
-    public Integer getUserId() {
+    public Integer getUser_id() {
         return user_id;
     }
 
-    public void setUserId(Integer user_id) {
+    public void setUser_id(Integer user_id) {
         this.user_id = user_id;
     }
 

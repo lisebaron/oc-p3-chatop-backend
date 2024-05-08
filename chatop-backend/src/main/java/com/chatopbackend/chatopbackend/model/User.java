@@ -1,6 +1,8 @@
 package com.chatopbackend.chatopbackend.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -15,7 +17,9 @@ public class User {
     private String email;
     private String name;
     private String password;
+    @CreationTimestamp
     private Timestamp createdAt;
+    @UpdateTimestamp
     private Timestamp updatedAt;
 
     public User() {
@@ -25,8 +29,6 @@ public class User {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
-        this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
     public Integer getId() {
@@ -58,9 +60,14 @@ public class User {
         return createdAt;
     }
 
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Timestamp getUpdatedAt() {
         return updatedAt;
     }
+
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }

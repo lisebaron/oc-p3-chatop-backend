@@ -1,6 +1,8 @@
 package com.chatopbackend.chatopbackend.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -17,7 +19,9 @@ public class Message {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
     private String message;
+    @CreationTimestamp
     private Timestamp createdAt;
+    @UpdateTimestamp
     private Timestamp updatedAt;
 
     public Message() {
@@ -27,16 +31,15 @@ public class Message {
         this.rental = rental;
         this.user = user;
         this.message = message;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
     public Integer getId() {
         return id;
     }
-    public Rental getRental_id() {
+    public Rental getRental() {
         return rental;
     }
-    public User getUser_id() {
+    public User getUser() {
         return user;
     }
     public String getMessage() {
