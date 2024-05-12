@@ -6,7 +6,6 @@ import com.chatopbackend.chatopbackend.model.User;
 import com.chatopbackend.chatopbackend.service.RentalService;
 import com.chatopbackend.chatopbackend.service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,7 +14,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
-@PreAuthorize("hasRole('USER')")
 public class RentalController {
 
     private final RentalService rentalService;
