@@ -14,12 +14,6 @@ public class MessageDto {
     private String createdAt;
     private String updatedAt;
 
-    public MessageDto(String message, Integer user_id, Integer rental_id ) {
-        this.rental_id = rental_id;
-        this.user_id = user_id;
-        this.message = message;
-    }
-
     public MessageDto(Message message) {
         this.id = message.getId();
         this.rental_id = message.getRental().getId();

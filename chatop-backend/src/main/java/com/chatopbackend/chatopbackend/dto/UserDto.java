@@ -26,12 +26,6 @@ public class UserDto {
         this.updatedAt = convertDateToString(user.getUpdatedAt());
     }
 
-    public UserDto(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-    }
-
     private String convertDateToString (Date date) {
         String pattern = "yyyy/dd/MM";
         DateFormat df = new SimpleDateFormat(pattern);

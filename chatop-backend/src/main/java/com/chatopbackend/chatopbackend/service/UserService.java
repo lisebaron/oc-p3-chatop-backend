@@ -22,7 +22,7 @@ public class UserService {
                 .orElse(null);
     }
 
-    public User getUserByEmail(String email) {
+    public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 

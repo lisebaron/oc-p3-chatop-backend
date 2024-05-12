@@ -34,14 +34,6 @@ public class RentalDto {
         this.updatedAt = convertDateToString(rental.getUpdatedAt());
     }
 
-    public RentalDto(String name, Float surface, Float price, String picture, String description) {
-        this.name = name;
-        this.surface = surface;
-        this.price = price;
-        this.picture = picture;
-        this.description = description;
-    }
-
     public RentalDto() {
     }
 
