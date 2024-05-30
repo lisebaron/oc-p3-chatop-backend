@@ -5,6 +5,7 @@ import com.chatopbackend.chatopbackend.model.Rental;
 import com.chatopbackend.chatopbackend.model.User;
 import com.chatopbackend.chatopbackend.service.RentalService;
 import com.chatopbackend.chatopbackend.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +15,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
+@SecurityRequirement(name = "bearer-key")
+@RequestMapping("/api")
 public class RentalController {
 
     private final RentalService rentalService;
@@ -24,21 +27,21 @@ public class RentalController {
         this.userService = userService;
     }
 
-    @GetMapping("/api/rentals")
+    @GetMapping("/rentals")
     @ResponseStatus(HttpStatus.OK)
     public List<RentalDto> getAllRentals() {
         List<Rental> rentals = rentalService.getAllRentals();
         return convertListToDto(rentals);
     }
 
-    @GetMapping("/api/rentals/{id}")
+    @GetMapping("/rentals/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RentalDto getRentalById(@PathVariable Integer id) {
         Rental rental = rentalService.getRentalById(id);
         return new RentalDto(rental);
     }
 
-    @PutMapping("/api/rentals/{id}")
+    @PutMapping("/rentals/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RentalDto editRentalById(@PathVariable Integer id, @RequestBody Rental request) {
         Rental rental = rentalService.getRentalById(id);
@@ -62,7 +65,7 @@ public class RentalController {
         return new RentalDto(rental);
     }
 
-    @PostMapping("/api/rentals")
+    @PostMapping("/rentals")
     @ResponseStatus(HttpStatus.CREATED)
     public RentalDto createRental(@RequestBody Rental request) {
         User owner = userService.getUserById(1); // TODO changer le 1 par owner_id
