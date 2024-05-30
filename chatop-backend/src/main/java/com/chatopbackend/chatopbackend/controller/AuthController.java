@@ -1,5 +1,6 @@
 package com.chatopbackend.chatopbackend.controller;
 
+import com.chatopbackend.chatopbackend.dto.UserDto;
 import com.chatopbackend.chatopbackend.model.ERole;
 import com.chatopbackend.chatopbackend.model.Role;
 import com.chatopbackend.chatopbackend.model.User;
@@ -12,6 +13,7 @@ import com.chatopbackend.chatopbackend.repository.UserRepository;
 import com.chatopbackend.chatopbackend.security.services.UserDetailsImpl;
 import com.chatopbackend.chatopbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import com.chatopbackend.chatopbackend.security.jwt.JwtUtils;
 import jakarta.validation.Valid;
@@ -29,30 +31,30 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
-public class UserController {
+public class AuthController {
 
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
     JwtUtils jwtUtils;
-    private final UserService userService;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userService = userService;
+    public AuthController(UserRepository userRepository, UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.userService = userService;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-//    @PostMapping("/api/auth/register")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public UserDto register(@RequestBody UserDto userDto) {
-//        String encryptedPassword = passwordEncoder.encode(userDto.getPassword());
-//        User createdUser = userService.createUser(userDto.getEmail(), userDto.getName(), encryptedPassword);
-//        return new UserDto(createdUser);
+//    @GetMapping("/me")
+//    @ResponseStatus(HttpStatus.OK)
+//    public UserDto getUserById(@PathVariable Integer id) {
+//        //TODO Check jwt token
+//        User user = userService.getUserById(id);
+//        return new UserDto(user);
 //    }
 
     @PostMapping("/register")
@@ -90,7 +92,7 @@ public class UserController {
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);

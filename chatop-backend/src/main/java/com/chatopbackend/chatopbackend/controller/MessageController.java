@@ -7,6 +7,7 @@ import com.chatopbackend.chatopbackend.model.User;
 import com.chatopbackend.chatopbackend.service.MessageService;
 import com.chatopbackend.chatopbackend.service.RentalService;
 import com.chatopbackend.chatopbackend.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 
 @RestController
+@SecurityRequirement(name = "bearer-key")
 public class MessageController {
 
     private final MessageService messageService;
