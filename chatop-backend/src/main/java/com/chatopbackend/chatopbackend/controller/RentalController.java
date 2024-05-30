@@ -1,12 +1,14 @@
 package com.chatopbackend.chatopbackend.controller;
 
 import com.chatopbackend.chatopbackend.dto.RentalDto;
+import com.chatopbackend.chatopbackend.dto.payload.response.MessageResponse;
 import com.chatopbackend.chatopbackend.model.Rental;
 import com.chatopbackend.chatopbackend.model.User;
 import com.chatopbackend.chatopbackend.service.RentalService;
 import com.chatopbackend.chatopbackend.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -67,10 +69,10 @@ public class RentalController {
 
     @PostMapping("/rentals")
     @ResponseStatus(HttpStatus.CREATED)
-    public RentalDto createRental(@RequestBody Rental request) {
+    public ResponseEntity<?> createRental(@RequestBody Rental request) {
         User owner = userService.getUserById(1); // TODO changer le 1 par owner_id
         Rental createdRental = rentalService.createRental(request.getName(), request.getSurface(), request.getPrice(), request.getPicture(), request.getDescription(), owner);
-        return new RentalDto(createdRental);
+        return ResponseEntity.ok(new MessageResponse("Rental created !"));
     }
 
     private List<RentalDto> convertListToDto(List<Rental> rentals) {

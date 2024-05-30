@@ -1,11 +1,7 @@
 package com.chatopbackend.chatopbackend.dto;
 
 import com.chatopbackend.chatopbackend.model.Rental;
-import com.chatopbackend.chatopbackend.model.User;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,9 +14,9 @@ public class RentalDto {
     private Float price;
     private String picture;
     private String description;
-    private Integer ownerId;
-    private String createdAt;
-    private String updatedAt;
+    private Integer owner_id;
+    private String created_at;
+    private String updated_at;
 
     public RentalDto(Rental rental) {
         this.id = rental.getId();
@@ -29,9 +25,9 @@ public class RentalDto {
         this.price = rental.getPrice();
         this.picture = rental.getPicture();
         this.description = rental.getDescription();
-        this.ownerId = rental.getOwner().getId();
-        this.createdAt = convertDateToString(rental.getCreatedAt());
-        this.updatedAt = convertDateToString(rental.getUpdatedAt());
+        this.owner_id = rental.getOwner().getId();
+        this.created_at = convertDateToString(rental.getCreatedAt());
+        this.updated_at = convertDateToString(rental.getUpdatedAt());
     }
 
     public RentalDto() {
@@ -91,27 +87,27 @@ public class RentalDto {
         this.description = description;
     }
 
-    public Integer getOwnerId() {
-        return ownerId;
+    public Integer getOwner_id() {
+        return owner_id;
     }
 
-    public void setOwnerId(Integer ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner_id(Integer owner_id) {
+        this.owner_id = owner_id;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    public String getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
     }
 }

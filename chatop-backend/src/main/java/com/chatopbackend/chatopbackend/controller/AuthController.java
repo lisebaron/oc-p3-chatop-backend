@@ -12,6 +12,7 @@ import com.chatopbackend.chatopbackend.repository.RoleRepository;
 import com.chatopbackend.chatopbackend.repository.UserRepository;
 import com.chatopbackend.chatopbackend.security.services.UserDetailsImpl;
 import com.chatopbackend.chatopbackend.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,9 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -49,13 +48,14 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-//    @GetMapping("/me")
-//    @ResponseStatus(HttpStatus.OK)
-//    public UserDto getUserById(@PathVariable Integer id) {
-//        //TODO Check jwt token
-//        User user = userService.getUserById(id);
-//        return new UserDto(user);
-//    }
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto getUserById(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String userEmail = jwtUtils.getUserNameFromJwtToken(token);
+        User user = userService.getUserByEmail(userEmail).orElse(null);
+        return user != null ? new UserDto(user) : null;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -84,13 +84,16 @@ public class AuthController {
 
         user.setRoles(roles);
         userRepository.save(user);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+
+        return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -98,14 +101,6 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getEmail(),
-                userDetails.getUsername(),
-                roles));
+        return ResponseEntity.ok(new JwtResponse(jwt));
     }
 }
