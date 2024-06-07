@@ -10,13 +10,12 @@ import com.chatopbackend.chatopbackend.dto.payload.response.JwtResponse;
 import com.chatopbackend.chatopbackend.dto.payload.response.MessageResponse;
 import com.chatopbackend.chatopbackend.repository.RoleRepository;
 import com.chatopbackend.chatopbackend.repository.UserRepository;
+import com.chatopbackend.chatopbackend.security.jwt.JwtUtils;
 import com.chatopbackend.chatopbackend.security.services.UserDetailsImpl;
 import com.chatopbackend.chatopbackend.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import com.chatopbackend.chatopbackend.security.jwt.JwtUtils;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,10 +50,8 @@ public class AuthController {
 
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getUserById(HttpServletRequest request) {
-        String token = request.getHeader("Authorization").replace("Bearer ", "");
-        String userEmail = jwtUtils.getUserNameFromJwtToken(token);
-        User user = userService.getUserByEmail(userEmail).orElse(null);
+    public UserDto getUserById(Principal principal) {
+        User user = userService.getUserByEmail(principal.getName()).orElse(null);
         return user != null ? new UserDto(user) : null;
     }
 

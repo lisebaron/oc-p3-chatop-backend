@@ -23,7 +23,7 @@ public class RentalDto {
         this.name = rental.getName();
         this.surface = rental.getSurface();
         this.price = rental.getPrice();
-        this.picture = rental.getPicture();
+        this.picture = "/api/img/" + rental.getId() + "/" + rental.getPicture();
         this.description = rental.getDescription();
         this.owner_id = rental.getOwner().getId();
         this.created_at = convertDateToString(rental.getCreatedAt());
