@@ -17,15 +17,6 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.created_at = convertDateToString(user.getCreatedAt());
-        this.updated_at = convertDateToString(user.getUpdatedAt());
-    }
-
     private String convertDateToString (Date date) {
         String pattern = "yyyy/dd/MM";
         DateFormat df = new SimpleDateFormat(pattern);

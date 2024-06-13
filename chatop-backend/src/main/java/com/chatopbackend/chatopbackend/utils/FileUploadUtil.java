@@ -1,4 +1,4 @@
-package com.chatopbackend.chatopbackend.controller;
+package com.chatopbackend.chatopbackend.utils;
 
 import java.io.*;
 import java.nio.file.*;

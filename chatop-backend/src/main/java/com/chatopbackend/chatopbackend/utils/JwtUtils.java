@@ -1,4 +1,4 @@
-package com.chatopbackend.chatopbackend.security.jwt;
+package com.chatopbackend.chatopbackend.utils;
 
 import java.security.Key;
 import java.util.Date;

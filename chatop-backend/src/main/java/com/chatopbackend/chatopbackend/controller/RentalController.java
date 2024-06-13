@@ -8,6 +8,9 @@ import com.chatopbackend.chatopbackend.model.Rental;
 import com.chatopbackend.chatopbackend.model.User;
 import com.chatopbackend.chatopbackend.service.RentalService;
 import com.chatopbackend.chatopbackend.service.UserService;
+import com.chatopbackend.chatopbackend.utils.DateUtils;
+import com.chatopbackend.chatopbackend.utils.FileUploadUtil;
+import com.chatopbackend.chatopbackend.utils.FileUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,11 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -55,43 +55,31 @@ public class RentalController {
     @ResponseStatus(HttpStatus.OK)
     public RentalDto getRentalById(@PathVariable Integer id) {
         Rental rental = rentalService.getRentalById(id);
-        return new RentalDto(rental);
+        return rentalMapping.mapRentalToRentalDto(rental);
     }
 
     @PutMapping("/rentals/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> editRentalById(@PathVariable Integer id, @RequestBody Rental request) {
+    public ResponseEntity<?> editRentalById(@PathVariable Integer id, @RequestBody RentalDto rentalDto) {
         Rental rental = rentalService.getRentalById(id);
         if (rental == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rental not found with ID: " + id);
         }
 
-        if (!request.getName().isEmpty()) {
-            rental.setName(request.getName());
+        if (!rentalDto.getName().isEmpty()) {
+            rental.setName(rentalDto.getName());
         }
-        if (!Objects.equals(request.getSurface(), rental.getSurface())) {
-            rental.setSurface(request.getSurface());
+        if (!Objects.equals(rentalDto.getSurface(), rental.getSurface())) {
+            rental.setSurface(rentalDto.getSurface());
         }
-        if (!Objects.equals(request.getPrice(), rental.getPrice())) {
-            rental.setPrice(request.getPrice());
+        if (!Objects.equals(rentalDto.getPrice(), rental.getPrice())) {
+            rental.setPrice(rentalDto.getPrice());
         }
-        if (!request.getDescription().isEmpty()) {
-            rental.setDescription(request.getDescription());
+        if (!rentalDto.getDescription().isEmpty()) {
+            rental.setDescription(rentalDto.getDescription());
         }
         // update rental
         return ResponseEntity.ok(new MessageResponse("Rental updated !"));
-    }
-
-    //TODO a mettre dans un utils
-    public static String generateStringFromDate(String ext){
-        return new SimpleDateFormat("yyyyMMddhhmmss'."+ext+"'").format(new Date());
-    }
-
-    //TODO a mettre dans un utils
-    public Optional<String> getExtensionByStringHandling(String filename) {
-        return Optional.ofNullable(filename)
-                .filter(f -> f.contains("."))
-                .map(f -> f.substring(filename.lastIndexOf(".") + 1));
     }
 
     @PostMapping("/rentals")
@@ -104,7 +92,7 @@ public class RentalController {
         User owner = userService.getUserByEmail(principal.getName()).orElse(null);
 
         String fileName =  StringUtils.cleanPath(picture.getOriginalFilename());
-        String fName = generateStringFromDate(getExtensionByStringHandling(fileName).orElse(null));
+        String fName = DateUtils.generateStringFromDate(FileUtils.getExtensionByStringHandling(fileName).orElse(null));
 
         Rental createdRental = rentalService.createRental(name, Float.parseFloat(surface), Float.parseFloat(price), fName, description, owner);
 

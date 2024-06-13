@@ -1,7 +1,5 @@
 package com.chatopbackend.chatopbackend.dto;
 
-import com.chatopbackend.chatopbackend.model.Rental;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,18 +15,6 @@ public class RentalDto {
     private Integer owner_id;
     private String created_at;
     private String updated_at;
-
-    public RentalDto(Rental rental) {
-        this.id = rental.getId();
-        this.name = rental.getName();
-        this.surface = rental.getSurface();
-        this.price = rental.getPrice();
-        this.picture = "/api/img/" + rental.getId() + "/" + rental.getPicture();
-        this.description = rental.getDescription();
-        this.owner_id = rental.getOwner().getId();
-        this.created_at = convertDateToString(rental.getCreatedAt());
-        this.updated_at = convertDateToString(rental.getUpdatedAt());
-    }
 
     public RentalDto() {
     }
