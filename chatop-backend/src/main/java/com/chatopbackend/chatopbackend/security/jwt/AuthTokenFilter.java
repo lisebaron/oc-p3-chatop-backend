@@ -3,6 +3,7 @@ package com.chatopbackend.chatopbackend.security.jwt;
 import java.io.IOException;
 
 import com.chatopbackend.chatopbackend.security.services.UserDetailsServiceImpl;
+import com.chatopbackend.chatopbackend.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

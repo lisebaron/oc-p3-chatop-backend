@@ -8,22 +8,13 @@ import java.util.Date;
 
 public class UserDto {
     private Integer id;
-    private String email;
     private String name;
+    private String email;
     private String password;
-    private String createdAt;
-    private String updatedAt;
+    private String created_at;
+    private String updated_at;
 
     public UserDto() {
-    }
-
-    public UserDto(User user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.name = user.getName();
-        this.password = user.getPassword();
-        this.createdAt = convertDateToString(user.getCreatedAt());
-        this.updatedAt = convertDateToString(user.getUpdatedAt());
     }
 
     private String convertDateToString (Date date) {
@@ -64,19 +55,19 @@ public class UserDto {
         this.password = password;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    public String getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
     }
 }
