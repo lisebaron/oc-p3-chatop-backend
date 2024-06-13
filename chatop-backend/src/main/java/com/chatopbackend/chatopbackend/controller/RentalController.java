@@ -60,8 +60,17 @@ public class RentalController {
 
     @PutMapping("/rentals/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> editRentalById(@PathVariable Integer id, @RequestBody RentalDto rentalDto) {
+    public ResponseEntity<?> editRentalById(@PathVariable Integer id, @RequestPart("name") String name,
+                                            @RequestPart("surface") String surface,
+                                            @RequestPart("price") String price,
+                                            @RequestPart("description") String description) {
         Rental rental = rentalService.getRentalById(id);
+        RentalDto rentalDto = new RentalDto();
+        rentalDto.setName(name);
+        rentalDto.setSurface(Float.parseFloat(surface));
+        rentalDto.setPrice(Float.parseFloat(price));
+        rentalDto.setDescription(description);
+
         if (rental == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rental not found with ID: " + id);
         }
