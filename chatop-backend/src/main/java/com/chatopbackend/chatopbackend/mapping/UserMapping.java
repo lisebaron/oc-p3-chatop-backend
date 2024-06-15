@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapping {
 
+    // faire un builder
     public UserDto mapUserToUserDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());

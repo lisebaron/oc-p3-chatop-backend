@@ -11,6 +11,7 @@ public class RentalMapping {
     @Value("${file.upload.dir}")
     private String dirName;
 
+    //faire un builder
     public RentalDto mapRentalToRentalDto(Rental rental) {
         RentalDto rentalDto = new RentalDto();
         rentalDto.setId(rental.getId());

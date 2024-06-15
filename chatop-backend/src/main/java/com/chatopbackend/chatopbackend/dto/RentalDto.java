@@ -18,7 +18,10 @@ public class RentalDto {
 
     public RentalDto() {
     }
-
+    private RentalDto(RentalBuilder builder) {
+        this.id = builder.id;
+        //je te laisse faire pour les autres
+    }
     private String convertDateToString (Date date) {
         String pattern = "yyyy/dd/MM";
         DateFormat df = new SimpleDateFormat(pattern);
@@ -95,5 +98,39 @@ public class RentalDto {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public static RentalBuilder builder() {
+        return new RentalBuilder();
+    }
+
+    // Business methods
+
+    public static class RentalBuilder {
+        private Integer id;
+        private String name;
+        private Float surface;
+        private Float price;
+        private String picture;
+        private String description;
+        private Integer owner_id;
+        private String created_at;
+        private String updated_at;
+
+        public RentalBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+        public RentalBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+        public RentalBuilder owner(Integer owner_id) {
+            this.owner_id = owner_id;
+            return this;
+        }
+        public RentalDto build() {
+           return new RentalDto(this);
+        }
     }
 }

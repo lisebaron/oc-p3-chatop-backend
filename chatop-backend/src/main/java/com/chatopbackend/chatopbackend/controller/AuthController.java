@@ -1,6 +1,8 @@
 package com.chatopbackend.chatopbackend.controller;
 
 import com.chatopbackend.chatopbackend.dto.UserDto;
+import com.chatopbackend.chatopbackend.exception.EmailAlreadyInUseException;
+import com.chatopbackend.chatopbackend.exception.UserNotFoundException;
 import com.chatopbackend.chatopbackend.mapping.UserMapping;
 import com.chatopbackend.chatopbackend.model.ERole;
 import com.chatopbackend.chatopbackend.model.Role;
@@ -24,11 +26,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Virer les unsued imports
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -54,47 +58,45 @@ public class AuthController {
 
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getUserById(Principal principal) {
-        User user = userService.getUserByEmail(principal.getName()).orElse(null);
-        return user != null ? userMapping.mapUserToUserDto(user) : null;
+    public UserDto getUserById(final Principal principal) {
+        //refactorer avec map dans optional et une exception
+        return userService.getUserByEmail(principal.getName())
+                .map(userMapping::mapUserToUserDto).orElseThrow(()-> new UserNotFoundException("User not found"));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(final @Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            throw new EmailAlreadyInUseException("Email Already exists");
         }
 
         // Create new user's account
-        User user = new User(signUpRequest.getEmail(),
+        final User user = new User(signUpRequest.getEmail(),
                 signUpRequest.getName(),
                 passwordEncoder.encode(signUpRequest.getPassword()));
 
-        Set<Role> roles = new HashSet<>();
+        final Set<Role> roles = new HashSet<>();
 
-        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+        final Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(userRole);
 
         user.setRoles(roles);
         userRepository.save(user);
-        Authentication authentication = authenticationManager.authenticate(
+        final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        final String jwt = jwtUtils.generateJwtToken(authentication);
 
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(final @Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
+        // à supprimer
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok(new JwtResponse(jwt));
     }

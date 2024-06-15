@@ -34,8 +34,8 @@ public class MessageController {
     public ResponseEntity<?> createMessage(@RequestBody MessageDto messageDto) throws ParseException {
         User user = userService.getUserById(messageDto.getUser_id());
         Rental rental = rentalService.getRentalById(messageDto.getRental_id());
-
-        Message messageCreated = messageService.createMessage(rental, user, messageDto.getMessage());
+        //virer le messageCreated
+        messageService.createMessage(rental, user, messageDto.getMessage());
         return ResponseEntity.ok(new MessageResponse("Message send with success"));
     }
 }

@@ -18,15 +18,19 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         exposeDirectory(registry);
     }
-
-    private void exposeDirectory(ResourceHandlerRegistry registry) {
-        Path uploadDir = Paths.get(dirName);
+    //mettre des commentaires java doc au dessus des méthodes
+    //mettre registry  en final
+    private void exposeDirectory(final ResourceHandlerRegistry registry) {
+        //mettre la variable uploadDir  en final
+        final Path uploadDir = Paths.get(dirName);
+        //mettre la variable uploadPath  en final
         String uploadPath = uploadDir.toFile().getAbsolutePath();
 
         if (dirName.startsWith("../")) {
             dirName = dirName.replace("../", "");
         }
-
+        // "/api/" dans une constante
+        // file:/ dans une constante
         registry.addResourceHandler("/api/" + dirName + "/**")
                 .addResourceLocations("file:/" + uploadPath + "/");
     }
