@@ -19,9 +19,6 @@ public class RentalService {
     public List<Rental> getAllRentals() {
         return rentalRepository.findAll();
     }
-//    public Optional<Rental> getRentalById(Integer id) {
-//        return rentalRepository.findById(id);
-//    }
     public Rental getRentalById(Integer id) {
         return rentalRepository.findById(id)
                 .orElse(null);
@@ -32,9 +29,17 @@ public class RentalService {
         return rentalRepository.save(rental);
     }
 
-//    public Rental updateRental(Integer id, Rental updatedRental) {
+    public Rental updateRental(Integer id, Rental updatedRental) {
 //        Optional<Rental> optRental = rentalRepository.findById(id);
 //        Rental rental = optRental.get();
 //        rentalRepository.save()
-//    }
+
+        Rental existingRentalOpt = getRentalById(id);
+
+
+
+
+
+
+    }
 }

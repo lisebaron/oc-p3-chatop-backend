@@ -20,7 +20,6 @@ public class MessageService {
         return messageRepository.findById(id);
     }
 
-
     public Message createMessage(Rental rental, User owner, String message) {
         Message createdMessage = new Message(rental, owner, message);
         return messageRepository.save(createdMessage);

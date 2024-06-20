@@ -1,38 +1,34 @@
 package com.chatopbackend.chatopbackend.controller;
 
 import com.chatopbackend.chatopbackend.dto.UserDto;
+import com.chatopbackend.chatopbackend.dto.payload.request.LoginRequest;
+import com.chatopbackend.chatopbackend.dto.payload.request.SignupRequest;
+import com.chatopbackend.chatopbackend.dto.payload.response.JwtResponse;
 import com.chatopbackend.chatopbackend.exception.EmailAlreadyInUseException;
 import com.chatopbackend.chatopbackend.exception.UserNotFoundException;
 import com.chatopbackend.chatopbackend.mapping.UserMapping;
 import com.chatopbackend.chatopbackend.model.ERole;
 import com.chatopbackend.chatopbackend.model.Role;
 import com.chatopbackend.chatopbackend.model.User;
-import com.chatopbackend.chatopbackend.dto.payload.request.LoginRequest;
-import com.chatopbackend.chatopbackend.dto.payload.request.SignupRequest;
-import com.chatopbackend.chatopbackend.dto.payload.response.JwtResponse;
-import com.chatopbackend.chatopbackend.dto.payload.response.MessageResponse;
 import com.chatopbackend.chatopbackend.repository.RoleRepository;
 import com.chatopbackend.chatopbackend.repository.UserRepository;
-import com.chatopbackend.chatopbackend.utils.JwtUtils;
-import com.chatopbackend.chatopbackend.security.services.UserDetailsImpl;
 import com.chatopbackend.chatopbackend.service.UserService;
+import com.chatopbackend.chatopbackend.utils.JwtUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Virer les unsued imports
- */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -56,21 +52,33 @@ public class AuthController {
         this.userMapping = userMapping;
     }
 
+    /**
+     * Retrieves the user based on the authenticated principal.
+     *
+     * @param principal the authenticated principal representing the user
+     * @return the DTO representation of the user
+     * @throws UserNotFoundException if the user is not found
+     */
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUserById(final Principal principal) {
-        //refactorer avec map dans optional et une exception
         return userService.getUserByEmail(principal.getName())
                 .map(userMapping::mapUserToUserDto).orElseThrow(()-> new UserNotFoundException("User not found"));
     }
 
+    /**
+     * Registers a new user based on the provided signup request.
+     *
+     * @param signUpRequest the signup request containing user details
+     * @return ResponseEntity containing JWT response upon successful registration
+     * @throws EmailAlreadyInUseException if the email provided is already registered
+     */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(final @Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new EmailAlreadyInUseException("Email Already exists");
         }
 
-        // Create new user's account
         final User user = new User(signUpRequest.getEmail(),
                 signUpRequest.getName(),
                 passwordEncoder.encode(signUpRequest.getPassword()));
@@ -80,9 +88,10 @@ public class AuthController {
         final Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(userRole);
-
         user.setRoles(roles);
+
         userRepository.save(user);
+
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
         final String jwt = jwtUtils.generateJwtToken(authentication);
@@ -90,14 +99,19 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
+    /**
+     * Authenticates a user based on the provided login request.
+     *
+     * @param loginRequest the login request containing user credentials
+     * @return ResponseEntity containing JWT response upon successful authentication
+     */
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(final @Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
+        final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        // à supprimer
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        final String jwt = jwtUtils.generateJwtToken(authentication);
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 }

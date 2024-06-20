@@ -1,7 +1,5 @@
 package com.chatopbackend.chatopbackend.dto.payload.response;
 
-import java.util.List;
-
 public class JwtResponse {
     private String token;
 

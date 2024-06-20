@@ -13,7 +13,6 @@ import com.chatopbackend.chatopbackend.utils.FileUploadUtil;
 import com.chatopbackend.chatopbackend.utils.FileUtils;
 import com.chatopbackend.chatopbackend.utils.Utils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,9 +49,9 @@ public class RentalController {
     @GetMapping("/rentals")
     @ResponseStatus(HttpStatus.OK)
     public RentalListResponse getAllRentals() {
-    return Optional.ofNullable(rentalService.getAllRentals())
-        .map(this::convertListToDto)
-        .orElse(new RentalListResponse());
+        return Optional.ofNullable(rentalService.getAllRentals())
+            .map(this::convertListToDto)
+            .orElse(new RentalListResponse());
     }
 
     @GetMapping("/rentals/{id}")
@@ -68,26 +66,24 @@ public class RentalController {
                                             @RequestPart("surface") String surface,
                                             @RequestPart("price") String price,
                                             @RequestPart("description") String description) {
-        //mettre final
-        Rental rental = rentalService.getRentalById(id);
+        final Rental rental = rentalService.getRentalById(id);
         //faire un builder
         //https://ippon.developpez.com/tutoriels/java/patron-conception-builder/
         //https://refactoring.guru/fr/design-patterns/builder/java/example
         RentalDto rentalDto = RentalDto.builder()
+                .id(id)
                 .name(name)
+                .surface(Utils.convertToNumeric(surface))
+                .price(Utils.convertToNumeric(price))
                 .description(description)
                 .build();
-        /**RentalDto rentalDto = new RentalDto();
-        rentalDto.setName(name);
-        rentalDto.setSurface(Float.parseFloat(surface));
-        rentalDto.setPrice(Float.parseFloat(price));
-        rentalDto.setDescription(description);**/
+
         if (rental == null) {
             //utiliser le style Exception Business comme UserNotFoundException
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rental not found with ID: " + id);
         }
         /**
-         * mettre le traitement dans le service RentalService lui atribuer une méthode update et utiliser le repository pour modifier dans la bd
+         * mettre le traitement dans le service RentalService lui attribuer une méthode update et utiliser le repository pour modifier dans la db
          *
          */
         if (checkIfRentalIsNotEmpty(rentalDto.getName())) {
@@ -102,6 +98,7 @@ public class RentalController {
         if (checkIfRentalIsNotEmpty(rentalDto.getDescription())) {
             rental.setDescription(rentalDto.getDescription());
         }
+        rentalService.
         // update rental
         return ResponseEntity.ok(new MessageResponse("Rental updated !"));
     }
@@ -119,7 +116,7 @@ public class RentalController {
                                           @RequestPart("description") String description) throws IOException {
         User owner = userService.getUserByEmail(principal.getName()).orElse(null);
 
-        ///revoir cette ligne
+        //revoir cette ligne
         String fileName =  StringUtils.cleanPath(picture.getOriginalFilename());
         String fName = DateUtils.generateStringFromDate(FileUtils.getExtensionByStringHandling(fileName).orElse(null));
         if(!Utils.isNumeric(surface)){

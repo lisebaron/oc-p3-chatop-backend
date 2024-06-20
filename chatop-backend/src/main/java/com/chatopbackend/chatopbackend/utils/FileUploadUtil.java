@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class FileUploadUtil {
 
-
     public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
         // Converts the path's type string to object Path
         Path uploadPath = Paths.get(uploadDir);
