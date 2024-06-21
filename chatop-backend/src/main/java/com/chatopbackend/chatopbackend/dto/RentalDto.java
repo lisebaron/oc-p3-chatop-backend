@@ -1,9 +1,5 @@
 package com.chatopbackend.chatopbackend.dto;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class RentalDto {
 
     private Integer id;

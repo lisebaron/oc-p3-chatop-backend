@@ -25,4 +25,13 @@ public class Utils {
     public static Float convertToNumeric(String data){
       return Optional.ofNullable(data).map(Float::parseFloat).orElse(0f);
     }
+
+    /**
+     *
+     * @param value
+     * @return
+     */
+    public static boolean isStringNotEmpty(String value) {
+        return !value.isEmpty();
+    }
 }

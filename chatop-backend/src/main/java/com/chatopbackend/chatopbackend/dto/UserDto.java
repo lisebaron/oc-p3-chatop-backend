@@ -1,11 +1,5 @@
 package com.chatopbackend.chatopbackend.dto;
 
-import com.chatopbackend.chatopbackend.model.User;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class UserDto {
     private Integer id;
     private String name;
@@ -17,10 +11,13 @@ public class UserDto {
     public UserDto() {
     }
 
-    private String convertDateToString (Date date) {
-        String pattern = "yyyy/dd/MM";
-        DateFormat df = new SimpleDateFormat(pattern);
-        return df.format(date);
+    public UserDto(UserBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.created_at = builder.created_at;
+        this.updated_at = builder.updated_at;
     }
 
     public Integer getId() {
@@ -69,5 +66,52 @@ public class UserDto {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
+    public static class UserBuilder {
+        private Integer id;
+        private String name;
+        private String email;
+        private String password;
+        private String created_at;
+        private String updated_at;
+
+        public UserBuilder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public UserBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public UserBuilder created_at(String created_at) {
+            this.created_at = created_at;
+            return this;
+        }
+
+        public UserBuilder updated_at(String updated_at) {
+            this.updated_at = updated_at;
+            return this;
+        }
+
+        public UserDto build() {
+            return new UserDto(this);
+        }
     }
 }
