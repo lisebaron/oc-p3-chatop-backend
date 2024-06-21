@@ -62,8 +62,8 @@ public class AuthController {
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUserById(final Principal principal) {
-        return userService.getUserByEmail(principal.getName())
-                .map(userMapping::mapUserToUserDto).orElseThrow(()-> new UserNotFoundException("User not found"));
+        User user = userService.getUserByEmail(principal.getName());
+        return userMapping.mapUserToUserDto(user);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.chatopbackend.chatopbackend.controller;
 import com.chatopbackend.chatopbackend.dto.RentalDto;
 import com.chatopbackend.chatopbackend.dto.payload.response.MessageResponse;
 import com.chatopbackend.chatopbackend.dto.payload.response.RentalListResponse;
+import com.chatopbackend.chatopbackend.exception.MissingFileException;
 import com.chatopbackend.chatopbackend.exception.RentalNotFoundException;
 import com.chatopbackend.chatopbackend.exception.StringNotNumericException;
 import com.chatopbackend.chatopbackend.mapping.RentalMapping;
@@ -10,7 +11,6 @@ import com.chatopbackend.chatopbackend.model.Rental;
 import com.chatopbackend.chatopbackend.model.User;
 import com.chatopbackend.chatopbackend.service.RentalService;
 import com.chatopbackend.chatopbackend.service.UserService;
-import com.chatopbackend.chatopbackend.utils.DateUtils;
 import com.chatopbackend.chatopbackend.utils.FileUploadUtil;
 import com.chatopbackend.chatopbackend.utils.FileUtils;
 import com.chatopbackend.chatopbackend.utils.Utils;
@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -65,11 +64,10 @@ public class RentalController {
      *
      * @param id the ID of the rental to retrieve.
      * @return RentalDto containing the rental information.
-     * @throws RentalNotFoundException if the rental is not found.
      */
     @GetMapping("/rentals/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RentalDto getRentalById(@PathVariable Integer id) {
+    public RentalDto getRentalById(final @PathVariable Integer id) {
         final Rental rental = rentalService.getRentalById(id);
         return rentalMapping.mapRentalToRentalDto(rental);
     }
@@ -85,19 +83,21 @@ public class RentalController {
      * @param description the description of the rental.
      * @return ResponseEntity with a MessageResponse indicating the creation status.
      * @throws IOException if an I/O error occurs.
-     * @throws StringNotNumericException if the surface string is not numeric.
      */
     @PostMapping("/rentals")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<MessageResponse> createRental(Principal principal, @RequestPart("name") String name,
-                                          @RequestPart("surface") String surface,
-                                          @RequestPart("price") String price,
-                                          @RequestPart("picture") MultipartFile picture,
-                                          @RequestPart("description") String description) throws IOException {
-        final User owner = userService.getUserByEmail(principal.getName()).orElse(null);
+    public ResponseEntity<MessageResponse> createRental(final Principal principal,
+                                                        final @RequestPart("name") String name,
+                                                        final @RequestPart("surface") String surface,
+                                                        final @RequestPart("price") String price,
+                                                        final @RequestPart("picture") MultipartFile picture,
+                                                        final @RequestPart("description") String description) throws IOException {
+        final User owner = userService.getUserByEmail(principal.getName());
 
-        final String fileName = StringUtils.cleanPath(Objects.requireNonNull(picture.getOriginalFilename()));
-        final String fName = DateUtils.generateStringFromDate(FileUtils.getExtensionByStringHandling(fileName).orElse(null));
+        final String fileName = StringUtils.cleanPath(Optional.ofNullable(picture.getOriginalFilename())
+                .orElseThrow(()-> new MissingFileException("The uploaded file is required but is missing.")));
+
+        final String fName = FileUtils.generateStringFromDate(FileUtils.getExtensionByStringHandling(fileName).orElse(null));
 
         if (!Utils.isNumeric(surface)) {
             throw new StringNotNumericException("String passed is not numeric.");
@@ -125,10 +125,11 @@ public class RentalController {
      */
     @PutMapping("/rentals/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<MessageResponse> editRentalById(@PathVariable Integer id, @RequestPart("name") String name,
-                                                          @RequestPart("surface") String surface,
-                                                          @RequestPart("price") String price,
-                                                          @RequestPart("description") String description) {
+    public ResponseEntity<MessageResponse> editRentalById(final @PathVariable Integer id,
+                                                          final @RequestPart("name") String name,
+                                                          final @RequestPart("surface") String surface,
+                                                          final @RequestPart("price") String price,
+                                                          final @RequestPart("description") String description) {
         final RentalDto rentalDto = RentalDto.builder()
                 .id(id)
                 .name(name)
