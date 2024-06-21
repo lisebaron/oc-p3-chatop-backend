@@ -3,6 +3,7 @@ package com.chatopbackend.chatopbackend.controller;
 import com.chatopbackend.chatopbackend.dto.RentalDto;
 import com.chatopbackend.chatopbackend.dto.payload.response.MessageResponse;
 import com.chatopbackend.chatopbackend.dto.payload.response.RentalListResponse;
+import com.chatopbackend.chatopbackend.exception.UserNotFoundException;
 import com.chatopbackend.chatopbackend.mapping.RentalMapping;
 import com.chatopbackend.chatopbackend.model.Rental;
 import com.chatopbackend.chatopbackend.model.User;
@@ -54,7 +55,9 @@ public class RentalController {
     @GetMapping("/rentals/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RentalDto getRentalById(@PathVariable Integer id) {
-        return Optional.ofNullable(rentalService.getRentalById(id)).map(rentalMapping::mapRentalToRentalDto).orElse(new RentalDto());
+        return Optional.ofNullable(rentalService.getRentalById(id))
+                .map(rentalMapping::mapRentalToRentalDto)
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
     }
 
     @PutMapping("/rentals/{id}")
@@ -87,15 +90,12 @@ public class RentalController {
        final User owner = userService.getUserByEmail(principal.getName()).orElse(null);
 
         //revoir cette ligne
-        final String fileName =  StringUtils.cleanPath(picture.getOriginalFilename());
+        final String fileName = StringUtils.cleanPath(picture.getOriginalFilename());
         final String fName = DateUtils.generateStringFromDate(FileUtils.getExtensionByStringHandling(fileName).orElse(null));
 
         if (!Utils.isNumeric(surface)){
-            // Lancer une exception
+            // Lancer une exception business
         }
-        /**
-         * Float.parseFloat(surface) => mettre cela dans un utils
-         */
         final Rental createdRental = rentalService.createRental(name, Utils.convertToNumeric(surface), Utils.convertToNumeric(price), fName, description, owner);
 
         final String uploadDir = dirName + "/" + createdRental.getId();

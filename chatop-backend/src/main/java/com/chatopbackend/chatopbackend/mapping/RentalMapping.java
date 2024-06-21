@@ -28,6 +28,7 @@ public class RentalMapping {
                 .price(rental.getPrice())
                 .picture("/api/" + dirName + "/" + rental.getId() + "/" + rental.getPicture())
                 .description(rental.getDescription())
+                .owner(rental.getOwner().getId())
                 .createdAt(DateUtils.convertDateToString(rental.getCreatedAt()))
                 .updatedAt(DateUtils.convertDateToString(rental.getUpdatedAt()))
                 .build();
