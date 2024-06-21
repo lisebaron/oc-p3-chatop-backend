@@ -1,6 +1,7 @@
 package com.chatopbackend.chatopbackend.service;
 
 import com.chatopbackend.chatopbackend.dto.RentalDto;
+import com.chatopbackend.chatopbackend.exception.RentalNotFoundException;
 import com.chatopbackend.chatopbackend.model.Rental;
 import com.chatopbackend.chatopbackend.model.User;
 import com.chatopbackend.chatopbackend.repository.RentalRepository;
@@ -22,14 +23,8 @@ public class RentalService {
         return rentalRepository.findAll();
     }
     public Rental getRentalById(Integer id) {
-        /**
-         * utiliser le style Exception Business comme UserNotFoundException
-         * if (rental == null) {
-         *     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rental not found with ID: " + id);
-         * }
-         */
         return rentalRepository.findById(id)
-                .orElse(null);
+                .orElseThrow(() -> new RentalNotFoundException("Rental not found"));
     }
 
     public Rental createRental(String name, float surface, float price, String picture, String description, User user) {

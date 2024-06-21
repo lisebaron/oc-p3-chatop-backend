@@ -16,9 +16,10 @@ public class RentalMapping {
     private String dirName;
 
     /**
-     * Maps a Rental to a RentalDto
-     * @param rental
-     * @return RentalDto
+     * Maps a Rental entity to a RentalDto.
+     *
+     * @param rental the Rental entity to be mapped.
+     * @return RentalDto containing the mapped details of the Rental entity.
      */
     public RentalDto mapRentalToRentalDto(Rental rental) {
         return RentalDto.builder()
@@ -35,9 +36,10 @@ public class RentalMapping {
     }
 
     /**
-     * Converts a list of Rentals into a list of RentalDtos
-     * @param rentals
-     * @return RentalListResponse
+     * Converts a list of Rental entities to a RentalListResponse containing DTOs.
+     *
+     * @param rentals the list of Rental entities to be converted.
+     * @return RentalListResponse containing DTOs mapped from Rental entities.
      */
     public RentalListResponse convertListToDto(List<Rental> rentals) {
         RentalListResponse rentalListResponse = new RentalListResponse();

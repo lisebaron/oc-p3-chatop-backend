@@ -39,7 +39,7 @@ public class MessageController {
      * @throws ParseException if there is an error while parsing data in the messageDto
      */
     @PostMapping("/messages")
-    public ResponseEntity<?> createMessage(final @RequestBody MessageDto messageDto) throws ParseException {
+    public ResponseEntity<MessageResponse> createMessage(final @RequestBody MessageDto messageDto) throws ParseException {
         final User user = userService.getUserById(messageDto.getUser_id());
         final Rental rental = rentalService.getRentalById(messageDto.getRental_id());
         messageService.createMessage(rental, user, messageDto.getMessage());
