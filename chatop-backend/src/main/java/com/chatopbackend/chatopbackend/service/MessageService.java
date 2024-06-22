@@ -20,7 +20,14 @@ public class MessageService {
         return messageRepository.findById(id);
     }
 
-
+    /**
+     * Creates a new message associated with a rental.
+     *
+     * @param rental the rental object to which the message is associated
+     * @param owner the user who owns the message
+     * @param message the content of the message
+     * @return the created Message object saved in the repository
+     */
     public Message createMessage(Rental rental, User owner, String message) {
         Message createdMessage = new Message(rental, owner, message);
         return messageRepository.save(createdMessage);
