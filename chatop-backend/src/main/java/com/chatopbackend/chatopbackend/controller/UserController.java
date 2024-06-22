@@ -21,6 +21,12 @@ public class UserController {
         this.userMapping = userMapping;
     }
 
+    /**
+     * Retrieves a user's details based on the provided user ID.
+     *
+     * @param id the ID of the user to retrieve
+     * @return UserDTO which is the DTO representation of the user
+     */
     @GetMapping("/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUserById(@PathVariable Integer id) {

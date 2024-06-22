@@ -11,19 +11,31 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
+    public static final String BEARER_KEY = "bearer-key";
+    public static final String SCHEME = "bearer";
+    public static final String BEARER_FORMAT = "JWT";
+    public static final String INFO_TITLE = "Chatop Backend";
+    public static final String INFO_VERSION = "1.0";
+    public static final String INFO_DESCRIPTION = "API for Chatop";
+
+    /**
+     * Configures the `OpenAPI` bean, which sets up the OpenAPI documentation for the application.
+     *
+     * @return the configured `OpenAPI` instance
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(new Components()
-                        .addSecuritySchemes("bearer-key", new SecurityScheme()
+                        .addSecuritySchemes(BEARER_KEY, new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")))
-                .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
+                                .scheme(SCHEME)
+                                .bearerFormat(BEARER_FORMAT)))
+                .addSecurityItem(new SecurityRequirement().addList(BEARER_KEY))
                 .info(new Info()
-                        .title("Chatop Backend")
-                        .version("1.0")
-                        .description("API for Chatop"));
+                        .title(INFO_TITLE)
+                        .version(INFO_VERSION)
+                        .description(INFO_DESCRIPTION));
     }
 }
 
